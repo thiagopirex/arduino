@@ -1,0 +1,10 @@
+1) Permissão para carrecgar sketups para a placa:
+sudo usermod -a -G dialout $USER
+sudo chmod a+rw /dev/ttyACM0
+
+Fonte: https://arduino.stackexchange.com/questions/21215/first-time-set-up-permission-denied-to-usb-port-ubuntu-14-04
+
+2) Biblioteca LiquidCristal
+https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
+-> necessário rodar código para verificar qual o endereço da placa
+
