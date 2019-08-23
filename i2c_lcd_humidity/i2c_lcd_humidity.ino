@@ -32,7 +32,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 
 // Variables
-const float MAX_HUMIDITY = 60;
+const float MAX_HUMIDITY = 55;
 const float MIN_HUMIDITY = 40;
 const int RELE = 13;
 
@@ -79,20 +79,33 @@ void printValues(float humidity, float temperature) {
   Serial.println(" *C");
 
   lcd.clear();
-  lcd.print("Temperatura: ");
+  lcd.print("T: ");
   lcd.print(temperature, 0);
-  lcd.print(" ºC");
-  lcd.setCursor(0, 1);
-  lcd.print("Umidade:");
+  lcd.print("C");
+  lcd.print(" Umid. ");
   lcd.print(humidity, 0);
-  lcd.print(" %");
+  lcd.print("%");
+  lcd.setCursor(0, 1);
+
+  lcd.print("min:");
+  lcd.print(MIN_HUMIDITY, 0);
+  lcd.print("% max:");
+  lcd.print(MAX_HUMIDITY, 0);
+  lcd.print("%");
 }
 
 void controlRele(float humidity) {
   if (humidity > MAX_HUMIDITY) {
-    digitalWrite(RELE, LOW);
+    Serial.println("desligar");
+    
+    digitalWrite(RELE, LOW); 
+    //caso se utilize um rele invertido
+    //digitalWrite(RELE, HIGH);
   }
   if (humidity < MIN_HUMIDITY) {
+    Serial.println("ligar");
     digitalWrite(RELE, HIGH);
+    //caso se utilize um rele invertido
+    //digitalWrite(RELE, LOW);
   }
 }
