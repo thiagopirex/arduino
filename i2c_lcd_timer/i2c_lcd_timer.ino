@@ -21,23 +21,26 @@ DS1302 rtc(2, 3, 4); //RealTimeClock
 int RELE_1 = 8;
 int RELE_2 = 9;
 
-int horaInicio = 15;
-int horaTermino = 15;
+int horaInicio = 16;
+int horaTermino = 16;
 int horaAux;
 int minInicio = 40;
-int minTermino = 50;
+int minTermino = 59;
 int minAux;
 
 
 String buffer;
 boolean up = false;
+boolean serial = false;
 
 
 void setup() {
   pinMode(13, OUTPUT);
   pinMode(RELE_1, OUTPUT);
   pinMode(RELE_2, OUTPUT);
-  Serial.begin(9600);
+  if(serial) {
+    Serial.begin(9600);
+  }
   digitalWrite(12, HIGH);
   setupLCD();
 
@@ -46,16 +49,18 @@ void setup() {
 
   
   //enable this to ajust the first data and clock
-  //configFirstTime();
-}
+  //Day, month, year, hour, minute, second, weekDay
+  //configFirstTime(21, 8,  2021, 16, 44, 0, THURSDAY);
+} 
 
 
 void loop() {
   //lcd.clear();
   lcd.setCursor(8, 0);
   lcd.print(rtc.getTimeStr());
-  Serial.println(rtc.getTimeStr());
-
+  if (serial) {
+    Serial.println(rtc.getTimeStr());
+  }
   lcd.setCursor(0, 0);
   if (up) {
     lcd.print("ON ");
@@ -71,8 +76,8 @@ void loop() {
 
 void turnOnOff() {
   buffer = rtc.getTimeStr();
-  horaAux = buffer.substring(0,2).toInt();//hora atual
-  if (horaAux >= horaInicio && horaInicio <= horaTermino) { //21>=20 20<=22
+  horaAux = buffer.substring(0,2).toInt();//hora atual//21
+  if (horaAux >= horaInicio && horaAux <= horaTermino) { //21>=20 20<=22
     minAux = buffer.substring(3,5).toInt();//minuto atual
     if (minAux >= minInicio && minAux <= minTermino) {
       digitalWrite(13, HIGH);
@@ -117,13 +122,14 @@ void setupLCD() {
 }
 
 
-void configFirstTime() {
+
+void configFirstTime(int D, int M, int Y, int H, int m, int s, int WK) {
   // Set the clock to run-mode, and disable the write protection
   rtc.halt(false);
   rtc.writeProtect(false);
 
   // The following lines can be commented out to use the values already stored in the DS1302
-  rtc.setDOW(MONDAY);        // Set Day-of-Week to FRIDAY
-  rtc.setTime(15, 38, 20);     // Set the time to 12:00:00 (24hr format)
-  rtc.setDate(26, 8, 2010);   // Set the date to August 6th, 2010
+  rtc.setDOW(WK);        // Set Day-of-Week to FRIDAY
+  rtc.setTime(H, m, s);     // Set the time to 12:00:00 (24hr format)
+  rtc.setDate(D, M, Y);   // Set the date to April 11th, 2020
 }
